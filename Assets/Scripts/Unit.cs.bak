@@ -1,0 +1,38 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.AI;
+
+public abstract class Unit : MonoBehaviour
+{
+    public int CurrentX { set; get; }
+    public int CurrentZ { set; get; }
+    public int id;
+    public bool isDed;
+        public bool move = false;
+    public Vector3 requestedPos;
+    private NavMeshAgent agent;
+    protected int gridSize = GameManager.gridSize;
+
+    public virtual void SetHealth(int amount)
+    {
+        
+    }
+
+    public virtual void TakeDamage(int amount)
+    {
+        
+    }
+
+    public void SetPosition(int x, int y)
+    {
+        CurrentX = x;
+        CurrentY = y;
+    }
+
+    public virtual bool[,] PossibleMove()
+    {
+        return new bool[15,15];
+    }
+
+}

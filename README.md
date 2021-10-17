@@ -1,2 +1,2 @@
-# AR-Game
-Bachelor-Project
+# Kandidat
+

@@ -1,0 +1,148 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+
+public class GameManager : MonoBehaviour
+{
+    public static GameManager Instance { set; get; }
+    private bool[,] allowedMoves { set; get; }
+
+    public Unit[,] Units { set; get; }
+    private Unit selectedUnit;
+
+    private const float TILE_SIZE = 1.0f;
+    private const float TILE_OFFSET = 0.5f;
+
+    private int selectionX = -1;
+    private int selectionY = -1;
+
+    public List<GameObject> Unitprefabs;
+    private List<GameObject> activeUnit;
+
+    private Quaternion orientation = Quaternion.Euler(0, 180, 0);
+
+    public bool isDedTurn = true;
+
+    private void Start()
+    {
+        SpawnAllUnits();
+    }
+
+    private void Update()
+    {
+        DrawGameboard();
+        UpdateSelection();
+
+        if(Input.GetMouseButtonDown(0))
+        {
+            if(selectionX >= 0 && selectionY >= 0)
+            {
+                if(selectedUnit == null)
+                {
+                    SelectUnit(selectionX, selectionY);
+                }
+                else
+                {
+                    MoveUnit(selectionX, selectionY);
+                }
+            }
+        }
+    }
+
+    private void SelectUnit(int x, int y)
+    {
+        if (Units[x, y] == null)
+            return;
+
+        if (Units[x, y].isDed != isDedTurn)
+            return;
+
+        allowedMoves = Units[x, y].PossibleMove();
+        selectedUnit = Units[x, y];
+        BoardHighlights.Instance.HighlightAllowedMoves(allowedMoves);
+    }
+
+    private void MoveUnit(int x, int y)
+    {
+        if(allowedMoves[x,y] == true)
+        {
+            Units[selectedUnit.CurrentX, selectedUnit.CurrentY] = null;
+            selectedUnit.transform.position = GetTileCenter(x, y);
+            selectedUnit.SetPosition(x, y);
+            Units[x, y] = selectedUnit;
+            isDedTurn = !isDedTurn;
+        }
+
+        selectedUnit = null;
+        BoardHighlights.Instance.HideHighlights();
+    }
+
+    private void SpawnAllUnits()
+    {
+        activeUnit = new List<GameObject>();
+        Units = new Unit[15, 15]; // Ändra när kartan ändras
+
+        SpawnUnit(0, 3, 0);
+        SpawnUnit(1, 7, 14);
+    }
+
+    private Vector3 GetTileCenter(int x, int y)
+    {
+        Vector3 origin = Vector3.zero;
+        origin.x += (TILE_SIZE * x) + TILE_OFFSET;
+        origin.z += (TILE_SIZE * y) + TILE_OFFSET;
+        origin.y = 0.5f;
+        return origin;
+    }
+
+    private void SpawnUnit(int index, int x, int y)
+    {
+        GameObject go = Instantiate(Unitprefabs[index], GetTileCenter(x,y), orientation) as GameObject; 
+        go.transform.SetParent(transform);
+        
+        Units[x, y] = go.GetComponent<Unit>();
+        Units[x, y].SetPosition(x, y);
+        activeUnit.Add(go);
+    }
+
+    private void UpdateSelection()
+    {
+        if (!Camera.main)
+            return;
+
+        RaycastHit hit;
+        if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, 25.0f, LayerMask.GetMask("GameMap")))
+        {
+            selectionX = (int)hit.point.x;
+            selectionY = (int)hit.point.z;
+
+            //Debug.Log(selectionX + " " + selectionY);
+        }
+        else
+        {
+            selectionX = -1;    
+            selectionY = -1;
+        }
+       
+    }
+
+    private void DrawGameboard()
+    {
+        Vector3 widthLine = Vector3.right * 15;
+        Vector3 heightLine = Vector3.forward * 15;
+
+        for(int i = 0; i <= 15; i++)
+        {
+            Vector3 start = Vector3.forward * i;
+            Debug.DrawLine(start, start + widthLine);
+            for (int j = 0; j <= 15; j++)
+            {
+                start = Vector3.right * j;
+                Debug.DrawLine(start, start + heightLine);
+            }
+        }
+    }
+
+
+}

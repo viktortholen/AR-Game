@@ -1,0 +1,27 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29911.84
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{BF6A91B2-A1AF-4F20-9D0F-6DB748A80715}"
+	ProjectSection(SolutionItems) = preProject
+		BoardHighlights.cs = BoardHighlights.cs
+		ButtonAction.cs = ButtonAction.cs
+		GameManager.cs = GameManager.cs
+		Obstacle.cs = Obstacle.cs
+		Unit.cs = Unit.cs
+		Unit_first.cs = Unit_first.cs
+		Unit_second.cs = Unit_second.cs
+		Unit_third.cs = Unit_third.cs
+		UnitHealth.cs = UnitHealth.cs
+		WinScreen.cs = WinScreen.cs
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {394939D5-244F-4D5D-91E0-950068638F54}
+	EndGlobalSection
+EndGlobal
